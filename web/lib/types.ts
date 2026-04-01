@@ -187,6 +187,36 @@ export interface SearchResult {
   totalScore: number;
 }
 
+// ─── Voice ───────────────────────────────────────────────────────────────────
+
+export interface VoiceRecognitionState {
+  /** Accumulated final transcript text */
+  transcript: string;
+  /** Live partial transcript (not yet final) */
+  interimTranscript: string;
+  /** Whether the microphone is currently active */
+  isListening: boolean;
+  /** Last error message, or null if no error */
+  error: string | null;
+}
+
+export interface VoiceChatMessage {
+  id: string;
+  role: "user" | "assistant";
+  text: string;
+  createdAt: number;
+}
+
+export interface GeminiVoiceRequest {
+  prompt: string;
+  /** Use SSE streaming. Default: true */
+  stream?: boolean;
+}
+
+export interface GeminiVoiceResponse {
+  text: string;
+}
+
 export type GitFileStatus = "M" | "A" | "?" | "D" | "R";
 
 export interface FileNode {

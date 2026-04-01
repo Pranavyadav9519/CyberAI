@@ -1,12 +1,15 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
-import { Send, Square, Paperclip } from "lucide-react";
+import { Send, Square, Paperclip, Mic } from "lucide-react";
 import { useChatStore } from "@/lib/store";
 import { streamChat } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { MAX_MESSAGE_LENGTH } from "@/lib/constants";
 import { CyberPresets } from "./CyberPresets";
+import { VoiceButton } from "./VoiceButton";
+import { VoiceChat } from "./VoiceChat";
+import { AnimatePresence } from "framer-motion";
 
 interface ChatInputProps {
   conversationId: string;
@@ -15,6 +18,7 @@ interface ChatInputProps {
 export function ChatInput({ conversationId }: ChatInputProps) {
   const [input, setInput] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
+  const [voicePanelOpen, setVoicePanelOpen] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const abortRef = useRef<AbortController | null>(null);
 
@@ -110,6 +114,13 @@ export function ChatInput({ conversationId }: ChatInputProps) {
 
   return (
     <div className="border-t border-surface-800 bg-surface-900/50 backdrop-blur-sm">
+      {/* JARVIS-style floating voice panel */}
+      <AnimatePresence>
+        {voicePanelOpen && (
+          <VoiceChat onClose={() => setVoicePanelOpen(false)} />
+        )}
+      </AnimatePresence>
+
       <CyberPresets onSelect={(p) => setInput(p)} />
       <div className="max-w-3xl mx-auto px-4 py-3">
         <div
@@ -146,6 +157,40 @@ export function ChatInput({ conversationId }: ChatInputProps) {
               "min-h-[24px] max-h-[200px] py-0.5"
             )}
           />
+
+          {/* Inline voice quick-action button */}
+          <VoiceButton
+            onExchange={(transcript, response) => {
+              // Optionally add voice exchange to the text chat
+              addMessage(conversationId, {
+                role: "user",
+                content: `🎤 ${transcript}`,
+                status: "complete",
+              });
+              addMessage(conversationId, {
+                role: "assistant",
+                content: response,
+                status: "complete",
+              });
+            }}
+            className="flex-shrink-0 mb-0.5"
+          />
+
+          {/* Toggle full voice panel */}
+          <button
+            onClick={() => setVoicePanelOpen((v) => !v)}
+            aria-label={voicePanelOpen ? "Close voice panel" : "Open voice panel"}
+            aria-pressed={voicePanelOpen}
+            title="JARVIS voice mode"
+            className={cn(
+              "p-1.5 rounded-lg transition-colors flex-shrink-0",
+              voicePanelOpen
+                ? "bg-cyan-600/20 text-cyan-400 hover:bg-cyan-600/30"
+                : "text-surface-500 hover:text-surface-300 hover:bg-surface-700"
+            )}
+          >
+            <Mic className="w-4 h-4" aria-hidden="true" />
+          </button>
 
           {isStreaming ? (
             <button
