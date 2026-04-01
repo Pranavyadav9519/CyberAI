@@ -109,9 +109,9 @@ export function ChatInput({ conversationId }: ChatInputProps) {
   };
 
   return (
-    <div className="border-t border-surface-800 bg-surface-900/50 backdrop-blur-sm px-4 py-3">
+    <div className="border-t border-surface-800 bg-surface-900/50 backdrop-blur-sm">
       <CyberPresets onSelect={(p) => setInput(p)} />
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-3xl mx-auto px-4 py-3">
         <div
           className={cn(
             "flex items-end gap-2 rounded-xl border bg-surface-800 px-3 py-2",
@@ -174,7 +174,7 @@ export function ChatInput({ conversationId }: ChatInputProps) {
         </div>
 
         <p className="text-xs text-surface-600 text-center mt-2">
-          Claude can make mistakes. Verify important information.
+          CyberAI may make mistakes. Always verify critical security findings.
         </p>
       </div>
     </div>

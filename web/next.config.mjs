@@ -1,12 +1,15 @@
-import type { NextConfig } from "next";
+// @ts-check
 import bundleAnalyzer from "@next/bundle-analyzer";
 
 const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
 });
 
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   reactStrictMode: true,
+  // Enable standalone output for Docker deployments
+  output: process.env.DOCKER_BUILD === "true" ? "standalone" : undefined,
   experimental: {
     typedRoutes: true,
     optimizePackageImports: ["lucide-react", "@radix-ui/react-dialog", "@radix-ui/react-dropdown-menu", "@radix-ui/react-tooltip"],
@@ -21,7 +24,7 @@ const nextConfig: NextConfig = {
     minimumCacheTTL: 60,
   },
 
-  // Static asset caching headers
+  // Static asset caching headers + security headers
   async headers() {
     return [
       {

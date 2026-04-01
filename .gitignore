@@ -8,7 +8,7 @@ node_modules/
 out/
 dist/
 
-# Environment files (NEVER commit these)
+# Environment files — NEVER commit these
 .env
 .env.local
 .env.*.local
@@ -25,4 +25,6 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
-web/tsconfig.tsbuildinfo
+
+# Docker
+.dockerignore
